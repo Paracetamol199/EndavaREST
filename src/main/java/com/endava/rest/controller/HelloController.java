@@ -1,5 +1,6 @@
 package com.endava.rest.controller;
 
+import com.endava.rest.models.Greeting;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,7 +12,8 @@ public class HelloController {
     @RequestMapping("/greeting")
     public String hello(
             @RequestParam(name = "name", defaultValue = "World") String name) {
-        return "Hello " + name;
+
+        return + name;
     }
 }
 

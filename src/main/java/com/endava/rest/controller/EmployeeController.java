@@ -13,12 +13,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/employee")
 public class EmployeeController {
 
-    private static List<Employee> employees = new ArrayList<Employee>() {
-        {
-            add(new Employee(1, "John", "Doe"));
-            add(new Employee(2, "Ion", "Popescu"));
-        }
-    };
 
     //    @RequestMapping("")
 //    public List<Employee> getEmployees() {
@@ -62,8 +56,9 @@ public class EmployeeController {
                 .orElse( "Soldatul Pierdut");
     }
 
-    @RequestMapping()
-    public String findEmployee
+    public String findEmployee() {
+
+    }
     //ULTRA OPTIONALA
     // pentru findEmployees
  //   https://stackoverflow.com/questions/32441919/how-return-error-message-in-spring-mvc-controller
