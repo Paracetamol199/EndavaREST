@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.web.client.RestTemplate;
 
-import static com.endava.rest.utils.Temp.HOSTNAME;
+import static com.endava.rest.utils.Variables.HOSTNAME;
 import static org.hamcrest.CoreMatchers.is;
 
 public class GreetingTests {
@@ -16,7 +16,7 @@ public class GreetingTests {
 
         String message = restTemplate.getForObject(HOSTNAME + ENDPOINT, String.class);
 
-        Assert.assertThat(message, is("Hello World"));
+        Assert.assertThat(message, is("Hello, World"));
     }
 
     @Test
@@ -25,6 +25,6 @@ public class GreetingTests {
 
         String message = restTemplate.getForObject(HOSTNAME + ENDPOINT + "?name=Ciprian", String.class);
 
-        Assert.assertThat(message, is("Hello Ciprian"));
+        Assert.assertThat(message, is("Hello, Ciprian"));
     }
 }

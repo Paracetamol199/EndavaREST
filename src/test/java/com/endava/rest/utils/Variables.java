@@ -1,5 +1,5 @@
 package com.endava.rest.utils;
 
-public class Temp {
+public class Variables {
     public static final String HOSTNAME = "http://localhost:8080";
 }

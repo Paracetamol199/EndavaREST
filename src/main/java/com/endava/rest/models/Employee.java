@@ -1,5 +1,8 @@
 package com.endava.rest.models;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class Employee {
 
     private String firstName;
