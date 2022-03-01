@@ -1,10 +1,14 @@
 package com.endava.rest;
 
+import com.endava.rest.exception.EmployeeErrorInfo;
 import com.endava.rest.models.Employee;
 import org.junit.Test;
 
 import org.springframework.http.*;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Collections;
 
 import static com.endava.rest.utils.Variables.HOSTNAME;
 import static org.hamcrest.CoreMatchers.is;
@@ -20,7 +24,7 @@ public class EmployeeTests {
         RestTemplate restTemplate = new RestTemplate();
 
         Integer employeeId = 2;
-        Employee employee = restTemplate.getForObject(HOSTNAME + ENDPOINT + "/" + employeeId, Employee.class);
+        Employee employee = restTemplate.getForObject(HOSTNAME + ENDPOINT + employeeId, Employee.class);
 
         assertThat(employee.getId(), is(employeeId));
         assertThat(employee.getFirstName(), is("Ion"));
@@ -94,7 +98,36 @@ public class EmployeeTests {
                 );
 
         //assertThat(responseEntity.getStatusCode(), is(HttpStatus.CREATED));
+    }
 
+    @Test
+    public void ShouldReturnExceptionMessageWhenEmployeeIdIsNotFound() {
+        RestTemplate restTemplate = new RestTemplate();
+
+        Integer employeeId = 66;
+        ResponseEntity<EmployeeErrorInfo> exception = restTemplate.getForEntity(HOSTNAME + ENDPOINT + employeeId, EmployeeErrorInfo.class);
+
+        assertThat(exception.getBody().getMessage(), is("Nu am putut sa gasim un angajat dupa ID-ul introdus"));
+        assertThat(exception.getBody().getHttpStatus(), is(HttpStatus.NOT_FOUND));
+    }
+
+    @Test
+    public void ShouldReturnExceptionMessageWhenEmployeeLastNameIsNotFound() {
+        RestTemplate restTemplate = new RestTemplate();
+        String employeeLastName = "Valeriu";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        HttpEntity<String> request = new HttpEntity<>(employeeLastName, headers);
+        ResponseEntity<EmployeeErrorInfo> responseEntity =
+                restTemplate.exchange(
+                        HOSTNAME + ENDPOINT + "find/lastName",
+                        HttpMethod.GET,
+                        request,
+                        EmployeeErrorInfo.class);
+
+        assertThat(responseEntity.getBody().getMessage(), is("Nu am putut sa gasim un angajat dupa numele introdus"));
+        assertThat(responseEntity.getBody().getHttpStatus(), is(HttpStatus.NOT_FOUND));
     }
 
 }
