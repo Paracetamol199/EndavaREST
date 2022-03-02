@@ -1,14 +1,13 @@
 package com.endava.rest;
 
 import com.endava.rest.exception.EmployeeErrorInfo;
+import com.endava.rest.exception.EmployeeResponseErrorHandler;
+import com.endava.rest.factory.HttpComponentsClientHttpRequestFactoryForGetWithBody;
 import com.endava.rest.models.Employee;
 import org.junit.Test;
 
 import org.springframework.http.*;
-import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Collections;
 
 import static com.endava.rest.utils.Variables.HOSTNAME;
 import static org.hamcrest.CoreMatchers.is;
@@ -82,8 +81,7 @@ public class EmployeeTests {
 
     @Test
     public void ShouldReturnEmployeeByUsingLastName() {
-        //TODO end the test
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactoryForGetWithBody());
 
         String employeeLastName = "Doe";
         HttpHeaders headers = new HttpHeaders();
@@ -97,12 +95,16 @@ public class EmployeeTests {
                         Employee.class
                 );
 
-        //assertThat(responseEntity.getStatusCode(), is(HttpStatus.CREATED));
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(responseEntity.getBody().getId(),is(1));
+        assertThat(responseEntity.getBody().getFirstName(), is("John"));
+        assertThat(responseEntity.getBody().getLastName(),is("Doe"));
     }
 
     @Test
     public void ShouldReturnExceptionMessageWhenEmployeeIdIsNotFound() {
         RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setErrorHandler(new EmployeeResponseErrorHandler());
 
         Integer employeeId = 66;
         ResponseEntity<EmployeeErrorInfo> exception = restTemplate.getForEntity(HOSTNAME + ENDPOINT + employeeId, EmployeeErrorInfo.class);
@@ -113,7 +115,9 @@ public class EmployeeTests {
 
     @Test
     public void ShouldReturnExceptionMessageWhenEmployeeLastNameIsNotFound() {
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactoryForGetWithBody());
+        restTemplate.setErrorHandler(new EmployeeResponseErrorHandler());
+
         String employeeLastName = "Valeriu";
 
         HttpHeaders headers = new HttpHeaders();
@@ -121,7 +125,7 @@ public class EmployeeTests {
         HttpEntity<String> request = new HttpEntity<>(employeeLastName, headers);
         ResponseEntity<EmployeeErrorInfo> responseEntity =
                 restTemplate.exchange(
-                        HOSTNAME + ENDPOINT + "find/lastName",
+                        HOSTNAME + ENDPOINT + "find/lastName/",
                         HttpMethod.GET,
                         request,
                         EmployeeErrorInfo.class);

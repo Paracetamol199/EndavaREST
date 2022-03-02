@@ -3,9 +3,13 @@ package com.endava.rest.exception;
 import org.springframework.http.HttpStatus;
 
 public class EmployeeErrorInfo {
-    private final String message;
-    private final Throwable throwable;
-    private final HttpStatus httpStatus;
+    private String message;
+    private Throwable throwable;
+    private HttpStatus httpStatus;
+
+    public EmployeeErrorInfo() {
+
+    }
 
     public EmployeeErrorInfo(String message,
                              Throwable throwable,
